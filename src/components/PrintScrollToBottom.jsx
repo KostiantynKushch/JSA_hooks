@@ -3,8 +3,7 @@ import { useEffect, useMemo } from 'react';
 const scroll = () => window.scrollTo(0, document.documentElement.scrollHeight);
 
 const PrintScrollToBottom = ({ children }) => {
-  const component = useScroll(children);
-  return component;
+  return useScroll(children);
 };
 
 function useScroll(component) {
