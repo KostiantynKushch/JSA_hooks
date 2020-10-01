@@ -1,21 +1,24 @@
-import React from "react";
-import { lifecycle } from "recompose";
+import { useEffect, useMemo } from 'react';
 
 const scroll = () => window.scrollTo(0, document.documentElement.scrollHeight);
 
-const PrintScrollToBottom = ({ children }) => children;
+const PrintScrollToBottom = ({ children }) => {
+  const component = useScroll(children);
+  return component;
+};
 
-const enhance = lifecycle({
-  componentDidMount() {
-    scroll();
-  },
-  getSnapshotBeforeUpdate() {
-    const { clientHeight, scrollTop, scrollHeight } = document.documentElement;
+function useScroll(component) {
+  const { clientHeight, scrollTop, scrollHeight } = document.documentElement;
+
+  const scrolled = useMemo(() => {
     return clientHeight + scrollTop < scrollHeight;
-  },
-  componentDidUpdate(prevProps, prevState, isScrolledUp) {
-    if (!isScrolledUp) scroll();
-  },
-});
+  }, [clientHeight, scrollTop, scrollHeight]);
 
-export default enhance(PrintScrollToBottom);
+  useEffect(() => {
+    if (!scrolled) scroll();
+  });
+
+  return component;
+}
+
+export default PrintScrollToBottom;
